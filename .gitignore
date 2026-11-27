@@ -6,7 +6,7 @@ __pycache__/
 .env.*
 !.env.example
 docs/
-models/.cache/
+models/
 backups/
 results/*
 !results/.gitkeep
