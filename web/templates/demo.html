@@ -1,0 +1,34 @@
+{% extends 'base.html' %}{% from 'components.html' import icon, heading %}
+{% block content %}{{ heading('Demostración','Consulta los datos con una pregunta en español.') }}
+{% if not quants %}<div class="alert" role="alert">No hay modelos disponibles. Coloca los archivos GGUF en models/ para ejecutar consultas.</div>{% endif %}
+<form id="demo-form" class="panel"><div class="section-heading"><div>{{ icon('code') }}<h2>Prepara tu consulta</h2></div></div><div class="grid md:grid-cols-2 gap-6"><label>Complejidad del esquema<select name="schema"><option value="baja">Baja · 7 tablas</option><option value="alta">Alta · 12 tablas</option></select></label><label>Cuantización del modelo<select name="quantization">{% for q in quants %}<option>{{ q }}</option>{% endfor %}</select></label></div><div class="form-divider"></div><div class="section-heading"><h2>¿Qué quieres saber?</h2><label class="check"><input name="save" type="checkbox" checked> Guardar intento</label></div><div class="segmented" role="group" aria-label="Fuente de pregunta"><button type="button" class="selected" data-source="bank">Preguntas de ejemplo</button><button type="button" data-source="free">Escribir una pregunta</button></div><div id="bank-input" class="grid md:grid-cols-4 gap-5"><label>Operación<select id="operation"><option value="">Todas las operaciones</option>{% for op in cases|map(attribute='operacion')|unique|sort %}<option>{{ op }}</option>{% endfor %}</select></label><label class="md:col-span-3">Pregunta de ejemplo<select id="case-select" name="case_id">{% for c in cases %}<option value="{{ c.id }}" data-operation="{{ c.operacion }}">{{ c.id }} · {{ c.pregunta }}</option>{% endfor %}</select></label></div><label id="free-input" hidden>Tu pregunta<textarea name="question" rows="3" maxlength="2000" placeholder="Ej.: ¿Cuáles son las cinco ciudades con más clientes?"></textarea></label><div class="form-actions"><button type="submit" class="btn primary" {% if not quants %}disabled{% endif %}>{{ icon('play') }} Generar SQL y consultar</button><button type="button" class="btn" id="clear-demo">Limpiar resultado</button></div></form>
+<div id="demo-status" class="status-box" role="status" aria-live="polite" hidden></div>
+<section id="demo-result" hidden>
+  <div class="section-heading">
+    <h2>Resultado</h2>
+    <button class="btn" id="download-trace">{{ icon('download') }} Descargar JSON</button>
+  </div>
+  <p id="result-question" class="muted"></p>
+  <div id="demo-kpis" class="kpis"></div>
+  <div id="verdict" role="status" aria-live="polite"></div>
+  <div class="sql-comparison">
+    <section class="panel">
+      <h2>SQL generado</h2>
+      <pre id="sql-code"></pre>
+      <details id="sql-error" hidden>
+        <summary>Detalle del error SQL</summary>
+        <pre id="sql-error-detail"></pre>
+      </details>
+      <h3>Datos obtenidos</h3>
+      <div id="rows"></div>
+    </section>
+    <section class="panel">
+      <h2>SQL esperado</h2>
+      <pre id="gold-code"></pre>
+      <h3>Datos esperados</h3>
+      <div id="gold-rows"></div>
+    </section>
+  </div>
+</section>
+<details class="panel"><summary>{{ icon('database') }} Explorar el esquema seleccionado</summary><button type="button" id="load-schema" class="btn">Cargar tablas y relaciones</button><div id="schema-view" aria-live="polite"></div></details>
+<script id="question-data" type="application/json">{{ cases|tojson }}</script>{% endblock %}

@@ -1,0 +1,53 @@
+{% from 'components.html' import icon %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="csrf-token" content="{{ session.csrf_token }}">
+  <title>{{ title }} · Text-to-SQL Lab</title>
+  <script src="{{ url_for('static', filename='theme.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+  {% block head %}{% endblock %}
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Saltar al contenido</a>
+  <aside id="sidebar">
+    <a href="{{ url_for('lab.demo') }}" class="brand">
+      <span class="brand-icon">{{ icon('lab') }}</span>
+      <span>Text-to-SQL Lab</span>
+    </a>
+    <nav aria-label="Navegación principal">
+      {% for id, glyph, label in [('demo','code','Demostración'),('experiments','grid','Experimentos'),('results','chart','Resultados')] %}
+      <a href="{{ url_for('lab.' ~ id) }}" class="nav-item{% if active == id %} active{% endif %}"
+         {% if active == id %}aria-current="page"{% endif %}>
+        {{ icon(glyph) }} {{ label }}
+      </a>
+      {% endfor %}
+    </nav>
+    <div class="sidebar-bottom">
+      {{ icon('database') }}
+      <div><strong>Ventas v2</strong><small>PostgreSQL · Solo lectura</small></div>
+    </div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar">
+      <div class="topbar-context">
+        <button id="menu" type="button" class="btn icon-button" aria-label="Mostrar navegación"
+                aria-controls="sidebar" aria-expanded="false">{{ icon('menu') }}</button>
+        <span>Laboratorio</span>
+      </div>
+      <div class="theme-picker" role="group" aria-label="Tema de la interfaz" hidden>
+        <button type="button" data-theme-choice="light" aria-pressed="false" aria-label="Modo claro" title="Modo claro">
+          {{ icon('sun') }} <span>Claro</span>
+        </button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false" aria-label="Modo oscuro" title="Modo oscuro">
+          {{ icon('moon') }} <span>Oscuro</span>
+        </button>
+      </div>
+    </header>
+    <main id="main">{% block content %}{% endblock %}</main>
+  </div>
+</body>
+</html>

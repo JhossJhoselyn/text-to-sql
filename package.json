@@ -1,0 +1,14 @@
+{
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@tailwindcss/cli": "^4.3.5",
+    "tailwindcss": "^4.3.5"
+  },
+  "name": "text-to-sql-lab",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i web/assets/input.css -o web/static/app.css --minify",
+    "watch:css": "tailwindcss -i web/assets/input.css -o web/static/app.css --watch",
+    "test:e2e": "playwright test tests/e2e --workers=1"
+  }
+}

@@ -1,0 +1,410 @@
+@import "tailwindcss";
+@source "../templates";
+@source "../static/app.js";
+@theme {
+  --font-sans: "Segoe UI", Inter, Arial, sans-serif;
+  --color-canvas: #101510;
+  --color-surface: #171e17;
+  --color-raised: #1a261d;
+  --color-field: #111711;
+  --color-edge: #303e30;
+  --color-control: #546a57;
+  --color-ink: #edf6ee;
+  --color-muted: #aabfae;
+  --color-accent: #a9ee65;
+  --color-accent-hover: #c1fa8b;
+  --color-on-accent: #132208;
+  --color-accent-tint: #213519;
+  --color-danger: #ffb9b0;
+  --color-danger-surface: #331d1c;
+  --color-danger-edge: #744541;
+}
+@layer base {
+  :root {
+    color-scheme: dark;
+    --panel-shadow: 0 1px 3px #0003;
+    --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23aabfae' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --color-canvas: #f4f7f2;
+    --color-surface: #fff;
+    --color-raised: #eef2eb;
+    --color-field: #f9fbf8;
+    --color-edge: #dce5d8;
+    --color-control: #899985;
+    --color-ink: #1b291b;
+    --color-muted: #4f614f;
+    --color-accent: #34631c;
+    --color-accent-hover: #274d14;
+    --color-on-accent: #fff;
+    --color-accent-tint: #e7f1df;
+    --color-danger: #8d2925;
+    --color-danger-surface: #fff0ed;
+    --color-danger-edge: #e2aca6;
+    --panel-shadow: 0 1px 3px #233b1b0d;
+    --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f614f' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  }
+  body {
+    @apply bg-canvas text-ink font-sans;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  h1 {
+    @apply text-3xl font-semibold tracking-tight text-ink;
+  }
+  h2 {
+    @apply text-lg font-semibold tracking-tight text-ink;
+  }
+  h3 {
+    @apply text-base font-semibold text-ink;
+  }
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button,
+  a {
+    @apply transition-colors;
+  }
+  button {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+  [hidden] {
+    display: none !important;
+  }
+}
+@layer components {
+  .icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  #sidebar {
+    @apply fixed inset-y-0 left-0 w-60 bg-surface border-r border-edge flex flex-col p-4 z-30 overflow-y-auto;
+  }
+  .brand {
+    @apply flex gap-3 items-center px-2 pt-2 pb-5 mb-4 border-b border-edge font-semibold text-ink;
+  }
+  .brand-icon {
+    @apply grid size-9 place-items-center rounded-lg bg-accent-tint text-accent;
+  }
+  .nav-item {
+    @apply flex gap-3 items-center px-3 py-2.5 mb-1 rounded-lg text-sm font-medium text-muted hover:bg-raised hover:text-ink;
+  }
+  .nav-item.active {
+    @apply text-accent bg-accent-tint font-semibold;
+  }
+  .sidebar-bottom {
+    @apply mt-auto border-t border-edge pt-4 px-2 flex gap-3 items-center text-sm text-muted;
+  }
+  .sidebar-bottom small {
+    @apply block text-xs;
+  }
+  .sidebar-bottom strong {
+    @apply font-medium text-ink;
+  }
+  .workspace {
+    @apply ml-60 min-h-screen flex flex-col;
+  }
+  .topbar {
+    @apply h-16 shrink-0 border-b border-edge bg-surface flex items-center justify-between gap-3 px-8;
+  }
+  .topbar-context {
+    @apply flex items-center gap-3 text-sm font-medium text-muted;
+  }
+  .theme-picker {
+    @apply flex shrink-0 gap-0.5 rounded-lg border border-edge bg-raised p-0.5;
+  }
+  .theme-picker button {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium text-muted hover:text-ink;
+  }
+  .theme-picker button[aria-pressed="true"] {
+    @apply bg-surface text-accent;
+    box-shadow: var(--panel-shadow);
+  }
+  .theme-picker .icon {
+    @apply size-4;
+  }
+  #menu {
+    display: none;
+  }
+  main {
+    @apply w-full max-w-7xl mx-auto p-8 flex-1;
+  }
+  .page-heading {
+    @apply mb-6;
+  }
+  .page-heading p {
+    @apply text-muted mt-2 text-base;
+  }
+  .panel {
+    @apply bg-surface border border-edge rounded-xl p-6 mb-6;
+    box-shadow: var(--panel-shadow);
+  }
+  .section-heading {
+    @apply flex flex-wrap gap-3 items-center justify-between mb-5;
+  }
+  .section-heading > div:first-child {
+    @apply flex items-center gap-3;
+  }
+  .section-heading .icon {
+    @apply text-accent;
+  }
+  .notice {
+    @apply flex gap-3 items-center bg-accent-tint border border-edge rounded-xl px-5 py-4 text-sm text-ink mb-6;
+  }
+  .notice p {
+    @apply text-accent mt-1;
+  }
+  .notice .badge {
+    @apply ml-auto;
+  }
+  .badge {
+    @apply inline-flex items-center gap-2 text-xs font-medium bg-raised text-muted rounded-md px-2 py-1;
+  }
+  .badge .icon {
+    width: 15px;
+    height: 15px;
+  }
+  .muted {
+    @apply text-sm text-muted;
+  }
+  label,
+  legend {
+    @apply block text-sm font-medium text-ink;
+  }
+  label small {
+    @apply block text-xs text-muted font-normal mt-2;
+  }
+  input:not([type="checkbox"]),
+  select,
+  textarea {
+    @apply block w-full border border-control bg-field rounded-lg px-3 py-2.5 text-sm text-ink mt-2;
+  }
+  select {
+    appearance: none;
+    background-image: var(--select-chevron);
+    background-size: 18px;
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    padding-right: 36px;
+  }
+  textarea {
+    resize: vertical;
+  }
+  .check {
+    @apply inline-flex items-center gap-2 font-normal;
+  }
+  input[type="checkbox"] {
+    @apply accent-accent w-4 h-4 shrink-0;
+  }
+  .choice {
+    @apply flex items-center gap-3 p-3 border border-edge rounded-lg mt-3;
+  }
+  .form-divider {
+    @apply border-t border-edge my-6;
+  }
+  .form-actions {
+    @apply flex flex-wrap items-center gap-3 mt-6;
+  }
+  .form-actions > .muted {
+    @apply ml-auto;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-control bg-surface px-4 py-2.5 text-sm font-medium text-ink hover:bg-raised;
+  }
+  .btn.primary {
+    @apply bg-accent border-accent text-on-accent hover:bg-accent-hover;
+  }
+  .btn:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+  .segmented {
+    @apply inline-flex gap-1 bg-raised p-1 rounded-lg mb-5;
+  }
+  .segmented button {
+    @apply text-sm text-muted px-4 py-2 rounded-md;
+  }
+  .segmented button.selected {
+    @apply bg-surface text-accent shadow-sm font-medium;
+  }
+  .status-box {
+    @apply p-5 mb-6 border border-edge bg-accent-tint rounded-xl text-sm;
+  }
+  .alert {
+    @apply rounded-lg border border-danger-edge bg-danger-surface p-4 my-4 text-sm text-danger;
+  }
+  .sql-comparison {
+    @apply grid md:grid-cols-2 gap-6 items-start;
+  }
+  .sql-comparison > section {
+    min-width: 0;
+  }
+  .sql-comparison pre {
+    min-height: 12rem;
+  }
+  .sql-comparison h3 {
+    @apply mt-5 mb-3;
+  }
+  .kpis {
+    @apply grid grid-cols-2 lg:grid-cols-4 gap-4 my-6;
+  }
+  .kpi {
+    @apply bg-surface border border-edge rounded-xl p-5;
+  }
+  .kpi span {
+    @apply block text-sm text-muted mb-2;
+  }
+  .kpi strong {
+    @apply text-2xl font-semibold text-ink;
+  }
+  .tabs {
+    @apply flex overflow-x-auto gap-5 border-b border-edge mb-5;
+  }
+  .tabs button {
+    @apply whitespace-nowrap pb-3 text-sm font-medium text-muted border-b-2 border-transparent;
+  }
+  .tabs button.selected {
+    @apply text-accent border-accent;
+  }
+  pre {
+    @apply bg-field border border-edge text-ink rounded-lg p-5 my-4 text-sm overflow-auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    max-height: 500px;
+  }
+  details summary {
+    @apply cursor-pointer text-sm font-medium text-ink;
+  }
+  details[open] summary {
+    @apply mb-5;
+  }
+  .table-wrap {
+    @apply overflow-auto;
+    max-height: 500px;
+  }
+  table {
+    @apply w-full text-sm text-left border-collapse;
+  }
+  th {
+    @apply text-xs font-semibold text-muted bg-canvas sticky top-0;
+  }
+  th,
+  td {
+    @apply px-4 py-3 border-b border-edge;
+  }
+  td {
+    max-width: 440px;
+    overflow-wrap: anywhere;
+  }
+  td small {
+    @apply block text-xs text-muted mt-1;
+  }
+  .empty {
+    @apply text-center py-12 text-muted;
+  }
+  .experiment-layout {
+    @apply grid grid-cols-1 lg:grid-cols-3 gap-6 items-start;
+  }
+  .experiment-layout > section {
+    @apply lg:col-span-2;
+  }
+  .experiment-layout fieldset {
+    min-width: 0;
+  }
+  #experiment-form label:not(.check):not(.choice) {
+    @apply mb-5;
+  }
+  .summary-panel {
+    @apply lg:sticky lg:top-6;
+  }
+  .summary-panel h2 {
+    @apply mt-2 mb-5;
+  }
+  .summary-panel p {
+    @apply my-4;
+  }
+  .total {
+    @apply border-t border-edge mt-5 pt-5 flex items-center justify-between text-sm text-muted;
+  }
+  .total strong {
+    @apply text-3xl font-semibold text-accent;
+  }
+  .case-list {
+    @apply max-h-64 overflow-y-auto my-3 space-y-3;
+  }
+  .case-list label {
+    @apply flex;
+  }
+  .downloads {
+    @apply flex flex-wrap gap-2;
+  }
+  .text-link {
+    @apply text-accent font-medium;
+  }
+  .chart {
+    @apply rounded-lg border border-edge bg-field;
+    min-width: 0;
+    min-height: 380px;
+  }
+  progress {
+    @apply w-full h-3 accent-accent my-4;
+  }
+  .skip-link {
+    @apply fixed -top-20 left-4 z-50 bg-surface p-3;
+  }
+  .skip-link:focus {
+    top: 1rem;
+  }
+}
+@media (max-width: 900px) {
+  #sidebar {
+    visibility: hidden;
+    transform: translateX(-100%);
+    transition: transform 0.2s;
+  }
+  #sidebar.open {
+    visibility: visible;
+    transform: translateX(0);
+    box-shadow: 0 0 0 100vmax #0009;
+  }
+  .workspace {
+    margin-left: 0;
+  }
+  #menu {
+    display: inline-flex;
+  }
+  .topbar {
+    padding: 0 1rem;
+    gap: 0.75rem;
+  }
+  main {
+    padding: 1.5rem 1rem;
+  }
+  h1 {
+    font-size: 1.65rem;
+  }
+  .panel {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .theme-picker button span {
+    display: none;
+  }
+  .theme-picker button {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+  }
+}
